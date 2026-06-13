@@ -318,9 +318,11 @@ function jsonp(p){
     const t=setTimeout(()=>{delete window[cb];document.getElementById(cb)?.remove();rej(new Error('timeout'))},15000);
     window[cb]=(d)=>{clearTimeout(t);delete window[cb];document.getElementById(cb)?.remove();res(d)};
     p.callback=cb;
+    // encode each param manually to handle Thai characters
+    const qs=Object.entries(p).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
     const s=document.createElement('script');
-    s.id=cb;s.src=SCRIPT_URL+'?'+new URLSearchParams(p);
-    s.onerror=()=>{clearTimeout(t);delete window[cb];s.remove();rej(new Error('err'))};
+    s.id=cb;s.src=SCRIPT_URL+'?'+qs;
+    s.onerror=()=>{clearTimeout(t);delete window[cb];s.remove();rej(new Error('script load error'))};
     document.head.appendChild(s);
   });
 }
