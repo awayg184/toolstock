@@ -35,10 +35,11 @@
   }
   body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; min-height: 100vh; }
   .page { display: none; }
-  .page.active { display: block; }
+  #stock-page.active { display: block; }
+  #login-page.active { display: flex; }
 
   /* LOGIN */
-  #login-page { display: none; min-height: 100vh; align-items: center; justify-content: center; padding: 2rem 1rem; }
+  #login-page { min-height: 100vh; align-items: center; justify-content: center; padding: 2rem 1rem; }
   #login-page.active { display: flex; }
   .login-card { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 2.25rem 2.5rem; width: 100%; max-width: 400px; box-shadow: var(--shadow); }
   .login-logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 2rem; }
