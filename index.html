@@ -10,316 +10,114 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #f5f4f1;
-    --surface: #ffffff;
-    --surface2: #f0ede8;
-    --border: rgba(0,0,0,0.10);
-    --border-md: rgba(0,0,0,0.18);
-    --text: #1a1917;
-    --text2: #6b6762;
-    --text3: #a09c97;
-    --accent: #2563eb;
-    --accent-bg: #eff4ff;
-    --accent-border: rgba(37,99,235,0.3);
-    --success: #2e7d32;
-    --success-bg: #f0faf0;
-    --danger: #c0392b;
-    --danger-bg: #fef2f2;
-    --danger-border: rgba(192,57,43,0.25);
-    --warn: #b45309;
-    --warn-bg: #fffbeb;
-    --radius: 10px;
-    --radius-sm: 7px;
+    --bg: #f5f4f1; --surface: #ffffff; --surface2: #f0ede8;
+    --border: rgba(0,0,0,0.10); --border-md: rgba(0,0,0,0.18);
+    --text: #1a1917; --text2: #6b6762; --text3: #a09c97;
+    --accent: #2563eb; --accent-bg: #eff4ff; --accent-border: rgba(37,99,235,0.3);
+    --success: #2e7d32; --success-bg: #f0faf0;
+    --danger: #c0392b; --danger-bg: #fef2f2; --danger-border: rgba(192,57,43,0.25);
+    --warn: #b45309; --warn-bg: #fffbeb;
+    --radius: 10px; --radius-sm: 7px;
     --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
   }
-
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #141412;
-      --surface: #1e1d1b;
-      --surface2: #252420;
-      --border: rgba(255,255,255,0.09);
-      --border-md: rgba(255,255,255,0.16);
-      --text: #f0ede8;
-      --text2: #9e9b96;
-      --text3: #6b6762;
-      --accent: #4f86f7;
-      --accent-bg: #1a2540;
-      --accent-border: rgba(79,134,247,0.35);
-      --success: #4caf50;
-      --success-bg: #0f2410;
-      --danger: #ef5350;
-      --danger-bg: #2a1010;
-      --danger-border: rgba(239,83,80,0.3);
-      --warn: #fbbf24;
-      --warn-bg: #2a1f08;
+      --bg: #141412; --surface: #1e1d1b; --surface2: #252420;
+      --border: rgba(255,255,255,0.09); --border-md: rgba(255,255,255,0.16);
+      --text: #f0ede8; --text2: #9e9b96; --text3: #6b6762;
+      --accent: #4f86f7; --accent-bg: #1a2540; --accent-border: rgba(79,134,247,0.35);
+      --success: #4caf50; --success-bg: #0f2410;
+      --danger: #ef5350; --danger-bg: #2a1010; --danger-border: rgba(239,83,80,0.3);
+      --warn: #fbbf24; --warn-bg: #2a1f08;
       --shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
   }
-
-  body {
-    font-family: 'Sarabun', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  /* ─── LAYOUT ─── */
+  body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; min-height: 100vh; }
   #app { min-height: 100vh; position: relative; }
   .page { display: none; }
   .page.active { display: block; }
-
-  /* ─── LOGIN ─── */
-  #login-page {
-    display: none;
-    min-height: 100vh;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-  }
+  #login-page { display: none; min-height: 100vh; align-items: center; justify-content: center; padding: 2rem 1rem; }
   #login-page.active { display: flex; }
-
-  .login-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius);
-    padding: 2.25rem 2.5rem;
-    width: 100%;
-    max-width: 380px;
-    box-shadow: var(--shadow);
-  }
-
-  .login-logo {
-    display: flex; align-items: center; gap: 10px;
-    justify-content: center; margin-bottom: 2rem;
-  }
-  .login-logo .logo-icon {
-    width: 42px; height: 42px; border-radius: var(--radius-sm);
-    background: var(--accent-bg); border: 0.5px solid var(--accent-border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; color: var(--accent);
-  }
+  .login-card { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 2.25rem 2.5rem; width: 100%; max-width: 380px; box-shadow: var(--shadow); }
+  .login-logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 2rem; }
+  .login-logo .logo-icon { width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--accent-bg); border: 0.5px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--accent); }
   .login-logo .logo-name { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-
   .field-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
   .field-row { margin-bottom: 1rem; }
-
-  input, select {
-    width: 100%; padding: 9px 12px;
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    color: var(--text);
-    font-family: 'Sarabun', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
+  input, select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 14px; outline: none; transition: border-color 0.15s; }
   input:focus, select:focus { border-color: var(--accent); }
-
-  .btn-primary {
-    width: 100%; padding: 10px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: var(--radius-sm);
-    font-family: 'Sarabun', sans-serif;
-    font-size: 15px; font-weight: 500;
-    cursor: pointer; transition: opacity 0.15s;
-  }
+  .btn-primary { width: 100%; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
   .btn-primary:hover { opacity: 0.88; }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
   .login-sub { font-size: 12px; color: var(--text3); text-align: center; margin-top: 1rem; }
   .err-msg { font-size: 12px; color: var(--danger); margin-bottom: 10px; display: none; padding: 8px 12px; background: var(--danger-bg); border-radius: var(--radius-sm); }
-
-  /* ─── MAIN ─── */
   #stock-page { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
-
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 1.5rem; padding-bottom: 1.25rem;
-    border-bottom: 0.5px solid var(--border);
-  }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); }
   .topbar-left { display: flex; align-items: center; gap: 10px; }
-  .topbar-icon {
-    width: 34px; height: 34px; border-radius: var(--radius-sm);
-    background: var(--accent-bg); border: 0.5px solid var(--accent-border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: var(--accent);
-  }
+  .topbar-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--accent-bg); border: 0.5px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--accent); }
   .topbar-title { font-size: 17px; font-weight: 600; }
-
-  .user-chip {
-    display: flex; align-items: center; gap: 7px;
-    background: var(--surface2); border: 0.5px solid var(--border);
-    border-radius: 999px; padding: 4px 12px 4px 4px;
-    font-size: 13px; cursor: pointer; transition: border-color 0.15s;
-  }
+  .user-chip { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: 999px; padding: 4px 12px 4px 4px; font-size: 13px; cursor: pointer; transition: border-color 0.15s; }
   .user-chip:hover { border-color: var(--border-md); }
-  .avatar {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--accent-bg); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 600;
-  }
-
-  /* ─── SYNC BAR ─── */
+  .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-bg); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
   .sync-bar { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text3); margin-bottom: 1.25rem; }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
   .sync-dot.ok { background: var(--success); }
   .sync-dot.err { background: var(--danger); }
   .sync-dot.loading { background: var(--warn); animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-
-  /* ─── ALERT ─── */
-  .alert-banner {
-    display: flex; align-items: flex-start; gap: 10px;
-    background: var(--danger-bg); border: 0.5px solid var(--danger-border);
-    border-radius: var(--radius-sm); padding: 0.75rem 1rem;
-    margin-bottom: 1.25rem; font-size: 13px; color: var(--danger);
-  }
+  .alert-banner { display: flex; align-items: flex-start; gap: 10px; background: var(--danger-bg); border: 0.5px solid var(--danger-border); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 13px; color: var(--danger); }
   .alert-banner i { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
-
-  /* ─── STATS ─── */
   .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-  .stat-card {
-    background: var(--surface); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 0.9rem 1rem;
-    box-shadow: var(--shadow);
-  }
+  .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1rem; box-shadow: var(--shadow); }
   .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
   .stat-val { font-size: 24px; font-weight: 600; color: var(--text); }
   .stat-val.danger { color: var(--danger); }
-
-  /* ─── TOOLBAR ─── */
   .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .search-wrap { flex: 1; min-width: 160px; position: relative; }
   .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text3); pointer-events: none; }
   .search-wrap input { padding-left: 34px; }
-
   .filter-sel { font-size: 13px; }
-
-  .btn-icon {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--surface); border: 0.5px solid var(--border-md);
-    border-radius: var(--radius-sm); padding: 8px 13px;
-    font-family: 'Sarabun', sans-serif; font-size: 13px;
-    color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap;
-  }
-  .btn-icon:hover { border-color: var(--border-md); color: var(--text); }
+  .btn-icon { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); padding: 8px 13px; font-family: 'Sarabun', sans-serif; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-icon:hover { color: var(--text); }
   .btn-icon.loading i { animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .btn-add {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: var(--radius-sm);
-    padding: 8px 14px; font-family: 'Sarabun', sans-serif;
-    font-size: 14px; font-weight: 500; cursor: pointer;
-    transition: opacity 0.15s; white-space: nowrap;
-  }
+  .btn-add { display: flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
   .btn-add:hover { opacity: 0.88; }
-
-  /* ─── ITEM CARDS ─── */
   .items-list { display: flex; flex-direction: column; gap: 8px; }
-  .item-card {
-    background: var(--surface); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 0.9rem 1.1rem;
-    display: flex; align-items: center; gap: 12px;
-    box-shadow: var(--shadow); transition: border-color 0.15s;
-  }
+  .item-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1.1rem; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); transition: border-color 0.15s; }
   .item-card:hover { border-color: var(--border-md); }
   .item-card.low { border-left: 3px solid var(--danger); }
-
-  .item-icon {
-    width: 40px; height: 40px; border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 19px; flex-shrink: 0;
-  }
+  .item-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
   .item-info { flex: 1; min-width: 0; }
-  .item-name {
-    font-size: 14px; font-weight: 500; color: var(--text);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  }
+  .item-name { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .item-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-  .badge {
-    font-size: 11px; padding: 1px 8px; border-radius: 999px;
-    font-weight: 500; flex-shrink: 0;
-  }
+  .badge { font-size: 11px; padding: 1px 8px; border-radius: 999px; font-weight: 500; flex-shrink: 0; }
   .badge-low { background: var(--danger-bg); color: var(--danger); }
   .badge-ok  { background: var(--success-bg); color: var(--success); }
-
   .item-qty { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .qty-num { font-size: 19px; font-weight: 600; min-width: 38px; text-align: center; color: var(--text); }
   .qty-num.low { color: var(--danger); }
-  .qty-btn {
-    width: 30px; height: 30px; border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border-md); background: var(--surface2);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 17px; color: var(--text);
-    transition: background 0.12s;
-  }
+  .qty-btn { width: 30px; height: 30px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-md); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; color: var(--text); transition: background 0.12s; }
   .qty-btn:hover { background: var(--bg); }
-
-  .btn-del {
-    background: none; border: none; color: var(--text3);
-    cursor: pointer; padding: 5px; border-radius: var(--radius-sm);
-    margin-left: 2px; font-size: 17px; transition: color 0.15s;
-  }
+  .btn-del { background: none; border: none; color: var(--text3); cursor: pointer; padding: 5px; border-radius: var(--radius-sm); margin-left: 2px; font-size: 17px; transition: color 0.15s; }
   .btn-del:hover { color: var(--danger); }
-
   .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--text2); }
   .empty-state i { font-size: 42px; display: block; margin-bottom: 0.75rem; color: var(--text3); }
-
-  /* ─── MODAL ─── */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4); z-index: 200;
-    align-items: center; justify-content: center;
-    padding: 1rem;
-  }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
   .modal-overlay.open { display: flex; }
-  .modal-box {
-    background: var(--surface); border: 0.5px solid var(--border-md);
-    border-radius: var(--radius); padding: 1.75rem;
-    width: 100%; max-width: 360px; box-shadow: var(--shadow);
-  }
+  .modal-box { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 1.75rem; width: 100%; max-width: 360px; box-shadow: var(--shadow); }
   .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 1.25rem; }
   .modal-field { margin-bottom: 1rem; }
   .modal-actions { display: flex; gap: 8px; margin-top: 0.5rem; }
-  .btn-cancel {
-    flex: 1; background: var(--surface2);
-    border: 0.5px solid var(--border-md); border-radius: var(--radius-sm);
-    padding: 9px; font-family: 'Sarabun', sans-serif;
-    font-size: 14px; color: var(--text); cursor: pointer;
-  }
-  .btn-cancel:hover { border-color: var(--border-md); }
-  .btn-save {
-    flex: 1; background: var(--accent); color: #fff;
-    border: none; border-radius: var(--radius-sm);
-    padding: 9px; font-family: 'Sarabun', sans-serif;
-    font-size: 14px; font-weight: 500; cursor: pointer;
-  }
+  .btn-cancel { flex: 1; background: var(--surface2); border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); padding: 9px; font-family: 'Sarabun', sans-serif; font-size: 14px; color: var(--text); cursor: pointer; }
+  .btn-save { flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 9px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
   .btn-save:hover { opacity: 0.88; }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 480px) {
-    .stats-row { grid-template-columns: repeat(3, 1fr); }
-    .stat-val { font-size: 20px; }
-    .login-card { padding: 1.75rem 1.5rem; }
-    #stock-page { padding: 1rem 0.75rem 3rem; }
-  }
+  @media (max-width: 480px) { .login-card { padding: 1.75rem 1.5rem; } #stock-page { padding: 1rem 0.75rem 3rem; } }
 </style>
 </head>
 <body>
 <div id="app">
-
-  <!-- LOGIN -->
   <div id="login-page" class="page active">
     <div class="login-card">
       <div class="login-logo">
@@ -336,7 +134,6 @@
     </div>
   </div>
 
-  <!-- STOCK PAGE -->
   <div id="stock-page" class="page">
     <div class="topbar">
       <div class="topbar-left">
@@ -349,15 +146,12 @@
         <i class="ti ti-logout" style="font-size:13px;color:var(--text3)"></i>
       </div>
     </div>
-
     <div class="sync-bar">
       <div class="sync-dot" id="sync-dot"></div>
       <span id="sync-text">กำลังโหลด...</span>
     </div>
-
     <div id="alert-area"></div>
     <div class="stats-row" id="stats-row"></div>
-
     <div class="toolbar">
       <div class="search-wrap">
         <i class="ti ti-search"></i>
@@ -375,11 +169,9 @@
         <i class="ti ti-plus"></i> เพิ่มสินค้า
       </button>
     </div>
-
     <div class="items-list" id="items-list"></div>
   </div>
 
-  <!-- ADD MODAL -->
   <div id="modal" class="modal-overlay" onclick="onModalBg(event)">
     <div class="modal-box">
       <p class="modal-title">เพิ่มอุปกรณ์ใหม่</p>
@@ -411,10 +203,10 @@
       </div>
     </div>
   </div>
-
 </div>
+
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPQuYsM-NVuM18tM5MhduZo7hj_kUFfQkXhMmC0SCl6JmH5YMmkKVMObed_6halX-j/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKYdZWZDjuImcG8xNibD3gFWgDBJJp0k5m-ARkrX0Te50YtVHn8oWIaq6gi5mlxNf-/exec';
 
 const catMeta = {
   hand:    { label:'เครื่องมือมือ',        icon:'ti-hammer', bg:'#eff4ff', ic:'#2563eb' },
@@ -426,20 +218,42 @@ const catMeta = {
 
 let items = [];
 let currentUser = '';
+let cbCounter = 0;
+
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = '_cb' + (++cbCounter) + '_' + Date.now();
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      document.getElementById(cbName) && document.getElementById(cbName).remove();
+      reject(new Error('timeout'));
+    }, 10000);
+
+    window[cbName] = (data) => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      document.getElementById(cbName) && document.getElementById(cbName).remove();
+      resolve(data);
+    };
+
+    params.callback = cbName;
+    const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+    const script = document.createElement('script');
+    script.id = cbName;
+    script.src = url;
+    script.onerror = () => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      script.remove();
+      reject(new Error('script error'));
+    };
+    document.head.appendChild(script);
+  });
+}
 
 function setSyncStatus(state, text) {
   document.getElementById('sync-dot').className = 'sync-dot ' + state;
   document.getElementById('sync-text').textContent = text;
-}
-
-async function apiGet(params) {
-  const res = await fetch(SCRIPT_URL + '?' + new URLSearchParams(params));
-  return res.json();
-}
-
-async function apiPost(body) {
-  const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(body) });
-  return res.json();
 }
 
 async function doLogin() {
@@ -447,13 +261,10 @@ async function doLogin() {
   const errEl = document.getElementById('login-err');
   const btn = document.getElementById('login-btn');
   errEl.style.display = 'none';
-  if (!name) {
-    errEl.textContent = 'กรุณากรอกชื่อก่อนเข้าใช้งาน';
-    errEl.style.display = 'block'; return;
-  }
+  if (!name) { errEl.textContent = 'กรุณากรอกชื่อก่อนเข้าใช้งาน'; errEl.style.display = 'block'; return; }
   btn.textContent = 'กำลังเชื่อมต่อ...'; btn.disabled = true;
   try {
-    const data = await apiGet({ action: 'getAll' });
+    const data = await jsonp({ action: 'getAll' });
     if (!data.ok) throw new Error();
     items = data.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty) }));
     currentUser = name;
@@ -488,7 +299,7 @@ async function loadItems() {
   btn.classList.add('loading');
   setSyncStatus('loading', 'กำลังโหลดข้อมูล...');
   try {
-    const data = await apiGet({ action: 'getAll' });
+    const data = await jsonp({ action: 'getAll' });
     if (!data.ok) throw new Error();
     items = data.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty) }));
     setSyncStatus('ok', 'ซิงค์แล้ว · ' + now());
@@ -556,7 +367,7 @@ async function changeQty(id, delta) {
   renderAll();
   setSyncStatus('loading', 'กำลังบันทึก...');
   try {
-    await apiPost({ action: 'updateQty', id, qty: item.qty });
+    await jsonp({ action: 'updateQty', id: item.id, qty: item.qty });
     setSyncStatus('ok', 'บันทึกแล้ว · ' + now());
   } catch { setSyncStatus('err', 'บันทึกไม่สำเร็จ'); }
 }
@@ -567,15 +378,12 @@ async function deleteItem(id) {
   renderAll();
   setSyncStatus('loading', 'กำลังลบ...');
   try {
-    await apiPost({ action: 'delete', id });
+    await jsonp({ action: 'delete', id });
     setSyncStatus('ok', 'ลบแล้ว · ' + now());
   } catch { setSyncStatus('err', 'ลบไม่สำเร็จ'); }
 }
 
-function openModal() {
-  document.getElementById('modal').classList.add('open');
-  document.getElementById('m-name').focus();
-}
+function openModal() { document.getElementById('modal').classList.add('open'); document.getElementById('m-name').focus(); }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.getElementById('m-name').value = '';
@@ -596,7 +404,7 @@ async function addItem() {
   closeModal(); renderAll();
   setSyncStatus('loading', 'กำลังบันทึกลง Sheet...');
   try {
-    await apiPost({ action: 'add', item: newItem });
+    await jsonp({ action: 'add', item: JSON.stringify(newItem) });
     setSyncStatus('ok', 'บันทึกแล้ว · ' + now());
   } catch { setSyncStatus('err', 'บันทึกไม่สำเร็จ'); }
 }
