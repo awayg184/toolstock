@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ToolStock — ระบบจัดการ Stock อุปกรณ์</title>
+<title>MediStock — ระบบจัดการ Stock</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -19,7 +19,7 @@
     --danger: #c0392b; --danger-bg: #fef2f2; --danger-border: rgba(192,57,43,0.25);
     --warn: #b45309; --warn-bg: #fffbeb;
     --radius: 10px; --radius-sm: 7px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.07);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -34,15 +34,16 @@
     }
   }
   body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; min-height: 100vh; }
-  #app { min-height: 100vh; position: relative; }
   .page { display: none; }
   .page.active { display: block; }
+
+  /* LOGIN */
   #login-page { display: none; min-height: 100vh; align-items: center; justify-content: center; padding: 2rem 1rem; }
   #login-page.active { display: flex; }
-  .login-card { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 2.25rem 2.5rem; width: 100%; max-width: 380px; box-shadow: var(--shadow); }
+  .login-card { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 2.25rem 2.5rem; width: 100%; max-width: 400px; box-shadow: var(--shadow); }
   .login-logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 2rem; }
   .login-logo .logo-icon { width: 42px; height: 42px; border-radius: var(--radius-sm); background: var(--accent-bg); border: 0.5px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--accent); }
-  .login-logo .logo-name { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+  .login-logo .logo-name { font-size: 22px; font-weight: 600; }
   .field-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
   .field-row { margin-bottom: 1rem; }
   input, select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 14px; outline: none; transition: border-color 0.15s; }
@@ -52,77 +53,116 @@
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
   .login-sub { font-size: 12px; color: var(--text3); text-align: center; margin-top: 1rem; }
   .err-msg { font-size: 12px; color: var(--danger); margin-bottom: 10px; display: none; padding: 8px 12px; background: var(--danger-bg); border-radius: var(--radius-sm); }
-  #stock-page { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
-  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); }
+
+  /* MAIN */
+  #stock-page { max-width: 760px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--border); flex-wrap: wrap; gap: 10px; }
   .topbar-left { display: flex; align-items: center; gap: 10px; }
   .topbar-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--accent-bg); border: 0.5px solid var(--accent-border); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--accent); }
   .topbar-title { font-size: 17px; font-weight: 600; }
-  .user-chip { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: 999px; padding: 4px 12px 4px 4px; font-size: 13px; cursor: pointer; transition: border-color 0.15s; }
+  .user-chip { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: 999px; padding: 4px 12px 4px 4px; font-size: 13px; cursor: pointer; }
   .user-chip:hover { border-color: var(--border-md); }
   .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-bg); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
-  .sync-bar { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text3); margin-bottom: 1.25rem; }
+
+  /* BRANCH TABS */
+  .tab-row { display: flex; gap: 0; margin-bottom: 1.25rem; background: var(--surface2); border-radius: var(--radius); padding: 4px; }
+  .branch-tab { flex: 1; padding: 8px 10px; border: none; background: none; border-radius: var(--radius-sm); font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; text-align: center; }
+  .branch-tab:hover { color: var(--text); }
+  .branch-tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  .branch-tab.active.surat { color: #2563eb; }
+  .branch-tab.active.thakin { color: #2e7d32; }
+
+  /* CAT TABS */
+  .cat-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .cat-tab { padding: 6px 16px; border: 0.5px solid var(--border-md); border-radius: 999px; font-family: 'Sarabun', sans-serif; font-size: 13px; background: var(--surface); color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .cat-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
+
+  /* SYNC */
+  .sync-bar { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text3); margin-bottom: 1rem; }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
   .sync-dot.ok { background: var(--success); }
   .sync-dot.err { background: var(--danger); }
   .sync-dot.loading { background: var(--warn); animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+  /* ALERT */
   .alert-banner { display: flex; align-items: flex-start; gap: 10px; background: var(--danger-bg); border: 0.5px solid var(--danger-border); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 13px; color: var(--danger); }
-  .alert-banner i { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
-  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-  .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1rem; box-shadow: var(--shadow); }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.85rem 1rem; box-shadow: var(--shadow); }
   .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
-  .stat-val { font-size: 24px; font-weight: 600; color: var(--text); }
+  .stat-val { font-size: 22px; font-weight: 600; color: var(--text); }
   .stat-val.danger { color: var(--danger); }
+
+  /* TOOLBAR */
   .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .search-wrap { flex: 1; min-width: 160px; position: relative; }
   .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text3); pointer-events: none; }
   .search-wrap input { padding-left: 34px; }
   .filter-sel { font-size: 13px; }
-  .btn-icon { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); padding: 8px 13px; font-family: 'Sarabun', sans-serif; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-icon { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); padding: 8px 13px; font-family: 'Sarabun', sans-serif; font-size: 13px; color: var(--text2); cursor: pointer; white-space: nowrap; }
   .btn-icon:hover { color: var(--text); }
   .btn-icon.loading i { animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .btn-add { display: flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
+  .btn-add { display: flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
   .btn-add:hover { opacity: 0.88; }
+
+  /* ITEMS */
   .items-list { display: flex; flex-direction: column; gap: 8px; }
-  .item-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1.1rem; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); transition: border-color 0.15s; }
+  .item-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.85rem 1.1rem; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); transition: border-color 0.15s; }
   .item-card:hover { border-color: var(--border-md); }
   .item-card.low { border-left: 3px solid var(--danger); }
-  .item-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+  .item-icon { width: 38px; height: 38px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
   .item-info { flex: 1; min-width: 0; }
-  .item-name { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .item-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
-  .badge { font-size: 11px; padding: 1px 8px; border-radius: 999px; font-weight: 500; flex-shrink: 0; }
+  .item-name { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-note { font-size: 11px; color: var(--danger); margin-top: 1px; }
+  .item-meta { font-size: 12px; color: var(--text2); margin-top: 3px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 500; }
   .badge-low { background: var(--danger-bg); color: var(--danger); }
   .badge-ok  { background: var(--success-bg); color: var(--success); }
-  .item-qty { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .qty-num { font-size: 19px; font-weight: 600; min-width: 38px; text-align: center; color: var(--text); }
-  .qty-num.low { color: var(--danger); }
+  .badge-med { background: #eff4ff; color: #2563eb; }
+  .badge-sup { background: #f0faf0; color: #2e7d32; }
+  .badge-surat  { background: #eff4ff; color: #2563eb; }
+  .badge-thakin { background: #f0faf0; color: #2e7d32; }
+  .item-qty { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .qty-input { width: 54px; text-align: center; font-size: 16px; font-weight: 600; padding: 4px 4px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-md); background: var(--surface); color: var(--text); }
+  .qty-input.low { color: var(--danger); border-color: var(--danger-border); }
   .qty-btn { width: 30px; height: 30px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-md); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; color: var(--text); transition: background 0.12s; }
   .qty-btn:hover { background: var(--bg); }
   .btn-del { background: none; border: none; color: var(--text3); cursor: pointer; padding: 5px; border-radius: var(--radius-sm); margin-left: 2px; font-size: 17px; transition: color 0.15s; }
   .btn-del:hover { color: var(--danger); }
-  .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--text2); }
-  .empty-state i { font-size: 42px; display: block; margin-bottom: 0.75rem; color: var(--text3); }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text2); }
+  .empty-state i { font-size: 40px; display: block; margin-bottom: 0.75rem; color: var(--text3); }
+
+  /* MODAL */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
   .modal-overlay.open { display: flex; }
-  .modal-box { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 1.75rem; width: 100%; max-width: 360px; box-shadow: var(--shadow); }
+  .modal-box { background: var(--surface); border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 1.75rem; width: 100%; max-width: 380px; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto; }
   .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 1.25rem; }
   .modal-field { margin-bottom: 1rem; }
   .modal-actions { display: flex; gap: 8px; margin-top: 0.5rem; }
   .btn-cancel { flex: 1; background: var(--surface2); border: 0.5px solid var(--border-md); border-radius: var(--radius-sm); padding: 9px; font-family: 'Sarabun', sans-serif; font-size: 14px; color: var(--text); cursor: pointer; }
   .btn-save { flex: 1; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 9px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
   .btn-save:hover { opacity: 0.88; }
-  @media (max-width: 480px) { .login-card { padding: 1.75rem 1.5rem; } #stock-page { padding: 1rem 0.75rem 3rem; } }
+
+  @media (max-width: 480px) {
+    .login-card { padding: 1.75rem 1.25rem; }
+    #stock-page { padding: 1rem 0.75rem 3rem; }
+    .stat-val { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- LOGIN -->
   <div id="login-page" class="page active">
     <div class="login-card">
       <div class="login-logo">
-        <div class="logo-icon"><i class="ti ti-tool"></i></div>
-        <span class="logo-name">ToolStock</span>
+        <div class="logo-icon"><i class="ti ti-medicine-syrup"></i></div>
+        <span class="logo-name">MediStock</span>
       </div>
       <div class="field-row">
         <label class="field-label" for="name-input">ชื่อของคุณ</label>
@@ -134,11 +174,12 @@
     </div>
   </div>
 
+  <!-- STOCK PAGE -->
   <div id="stock-page" class="page">
     <div class="topbar">
       <div class="topbar-left">
-        <div class="topbar-icon"><i class="ti ti-tool"></i></div>
-        <span class="topbar-title">ToolStock</span>
+        <div class="topbar-icon"><i class="ti ti-medicine-syrup"></i></div>
+        <span class="topbar-title">MediStock</span>
       </div>
       <div class="user-chip" onclick="doLogout()" title="ออกจากระบบ">
         <div class="avatar" id="avatar-initials">?</div>
@@ -146,16 +187,33 @@
         <i class="ti ti-logout" style="font-size:13px;color:var(--text3)"></i>
       </div>
     </div>
+
+    <!-- BRANCH TABS -->
+    <div class="tab-row">
+      <button class="branch-tab active surat" id="btab-all" onclick="setBranch('all')">🏥 ทั้งสองสาขา</button>
+      <button class="branch-tab" id="btab-สุราษ" onclick="setBranch('สุราษ')">สุราษ</button>
+      <button class="branch-tab" id="btab-ทักษิณ" onclick="setBranch('ทักษิณ')">ทักษิณ</button>
+    </div>
+
+    <!-- CAT TABS -->
+    <div class="cat-tabs">
+      <button class="cat-tab active" onclick="setCat('all')" id="tab-all">ทั้งหมด</button>
+      <button class="cat-tab" onclick="setCat('med')" id="tab-med">💊 เวชภัณฑ์และยา</button>
+      <button class="cat-tab" onclick="setCat('sup')" id="tab-sup">🧰 อุปกรณ์</button>
+    </div>
+
     <div class="sync-bar">
       <div class="sync-dot" id="sync-dot"></div>
       <span id="sync-text">กำลังโหลด...</span>
     </div>
+
     <div id="alert-area"></div>
     <div class="stats-row" id="stats-row"></div>
+
     <div class="toolbar">
       <div class="search-wrap">
         <i class="ti ti-search"></i>
-        <input id="search-input" type="text" placeholder="ค้นหาอุปกรณ์..." oninput="renderList()" />
+        <input id="search-input" type="text" placeholder="ค้นหารายการ..." oninput="renderList()" />
       </div>
       <select class="filter-sel" id="filter-sel" onchange="renderList()">
         <option value="all">ทั้งหมด</option>
@@ -166,36 +224,46 @@
         <i class="ti ti-refresh"></i> รีเฟรช
       </button>
       <button class="btn-add" onclick="openModal()">
-        <i class="ti ti-plus"></i> เพิ่มสินค้า
+        <i class="ti ti-plus"></i> เพิ่มรายการ
       </button>
     </div>
+
     <div class="items-list" id="items-list"></div>
   </div>
 
+  <!-- MODAL -->
   <div id="modal" class="modal-overlay" onclick="onModalBg(event)">
     <div class="modal-box">
-      <p class="modal-title">เพิ่มอุปกรณ์ใหม่</p>
+      <p class="modal-title">เพิ่มรายการใหม่</p>
       <div class="modal-field">
-        <label class="field-label" for="m-name">ชื่ออุปกรณ์</label>
-        <input id="m-name" type="text" placeholder="เช่น ไขควง, สว่าน, ประแจ" />
+        <label class="field-label" for="m-branch">สาขา</label>
+        <select id="m-branch">
+          <option value="สุราษ">สุราษ</option>
+          <option value="ทักษิณ">ทักษิณ</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="field-label" for="m-name">ชื่อรายการ</label>
+        <input id="m-name" type="text" placeholder="เช่น Syringe 5ml, Alcohol 70%" />
       </div>
       <div class="modal-field">
         <label class="field-label" for="m-cat">หมวดหมู่</label>
         <select id="m-cat">
-          <option value="hand">เครื่องมือมือ</option>
-          <option value="power">เครื่องมือไฟฟ้า</option>
-          <option value="measure">เครื่องวัด</option>
-          <option value="safety">อุปกรณ์ความปลอดภัย</option>
-          <option value="other">อื่นๆ</option>
+          <option value="med">เวชภัณฑ์และยา</option>
+          <option value="sup">อุปกรณ์</option>
         </select>
       </div>
       <div class="modal-field">
+        <label class="field-label" for="m-note">หมายเหตุ (ถ้ามี)</label>
+        <input id="m-note" type="text" placeholder="เช่น หมดอายุ 13/2/2568" />
+      </div>
+      <div class="modal-field">
         <label class="field-label" for="m-qty">จำนวนเริ่มต้น</label>
-        <input id="m-qty" type="number" min="0" value="1" />
+        <input id="m-qty" type="number" min="0" value="0" />
       </div>
       <div class="modal-field">
         <label class="field-label" for="m-min">แจ้งเตือนเมื่อเหลือต่ำกว่า</label>
-        <input id="m-min" type="number" min="1" value="3" />
+        <input id="m-min" type="number" min="0" value="5" />
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
@@ -208,45 +276,86 @@
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKYdZWZDjuImcG8xNibD3gFWgDBJJp0k5m-ARkrX0Te50YtVHn8oWIaq6gi5mlxNf-/exec';
 
+const DEFAULT_ITEMS = [
+  { name:'Syringe 5 ml', cat:'sup', note:'' },
+  { name:'Syringe 10 ml', cat:'sup', note:'' },
+  { name:'Syringe 20 ml', cat:'sup', note:'' },
+  { name:'Needle No.18', cat:'sup', note:'' },
+  { name:'Medicath No.20', cat:'sup', note:'' },
+  { name:'Medicath No.22', cat:'sup', note:'' },
+  { name:'Extension Tube ปกติ 18inc', cat:'sup', note:'' },
+  { name:'Y-catheter', cat:'sup', note:'' },
+  { name:'NSS 100ml.', cat:'med', note:'' },
+  { name:'Sterile Water ต่อเข้าเกรย์ O2ได้เลย', cat:'med', note:'' },
+  { name:'Mask', cat:'sup', note:'' },
+  { name:'ถุงมือ เบอร์ M', cat:'sup', note:'' },
+  { name:'ชุดตรวจ covid-19', cat:'med', note:'' },
+  { name:'Transpor', cat:'sup', note:'' },
+  { name:'แผ่นฟิล์ม', cat:'sup', note:'' },
+  { name:'สำลีแอลกอฮอล์ (alcohol pad)', cat:'med', note:'หมดอายุ 13/2/2568' },
+  { name:'สำลีแห้งแพคก้อน', cat:'med', note:'' },
+  { name:'Alcohol 70% ขวด', cat:'med', note:'' },
+  { name:'Alcohol Gel', cat:'med', note:'' },
+  { name:'Canula / PPE', cat:'sup', note:'' },
+  { name:'Red Dot', cat:'sup', note:'' },
+  { name:'เจลติด Red Dot ในเคส Cardiac, chest', cat:'sup', note:'' },
+  { name:'พลาสเตอร์', cat:'med', note:'' },
+  { name:'Earplugs โฟมอุดหู', cat:'sup', note:'' },
+  { name:'ซองฟิล์มพลาสติก', cat:'sup', note:'' },
+  { name:'ซอง CD / DVD', cat:'sup', note:'' },
+  { name:'กระป๋องทิ้งเข็ม', cat:'sup', note:'' },
+  { name:'ปากกาน้ำเงิน-ปากกาแดง', cat:'sup', note:'' },
+  { name:'แผ่น CD โลโก้', cat:'sup', note:'' },
+  { name:'หมวกคลุมผม', cat:'sup', note:'' },
+  { name:'ซองจดหมายครึ่ง A5 (เล็ก)', cat:'sup', note:'' },
+  { name:'สติ๊กเกอร์ติดชื่อ Pt./กระดาษโน๊ต', cat:'sup', note:'' },
+  { name:'สายรัดหน้าท้องผู้ป่วย XL=3,M=2', cat:'sup', note:'' },
+  { name:'Set IV drip adenosine', cat:'med', note:'' },
+  { name:'Tube DNA', cat:'sup', note:'exp. 30/06/2025' },
+  { name:'Extension Tube 36', cat:'sup', note:'' },
+  { name:'MEDRAD MRI Disposable Kit', cat:'sup', note:'กระบอกยาสำหรับเครื่อง Injector' },
+  { name:'Contrast', cat:'med', note:'' },
+  { name:'ยา Gadovist', cat:'med', note:'' },
+  { name:'ยา Clariscan', cat:'med', note:'' },
+  { name:'ยา Dotarem', cat:'med', note:'' },
+  { name:'ยา Multihance', cat:'med', note:'' },
+  { name:'ยา Primovist', cat:'med', note:'' },
+];
+
 const catMeta = {
-  hand:    { label:'เครื่องมือมือ',        icon:'ti-hammer', bg:'#eff4ff', ic:'#2563eb' },
-  power:   { label:'เครื่องมือไฟฟ้า',     icon:'ti-bolt',   bg:'#fffbeb', ic:'#b45309' },
-  measure: { label:'เครื่องวัด',           icon:'ti-ruler',  bg:'#f0faf0', ic:'#2e7d32' },
-  safety:  { label:'อุปกรณ์ความปลอดภัย',  icon:'ti-shield', bg:'#fef2f2', ic:'#c0392b' },
-  other:   { label:'อื่นๆ',               icon:'ti-box',    bg:'#f5f4f1', ic:'#6b6762' },
+  med: { label:'เวชภัณฑ์และยา', icon:'ti-pill', bg:'#eff4ff', ic:'#2563eb' },
+  sup: { label:'อุปกรณ์', icon:'ti-tool', bg:'#f0faf0', ic:'#2e7d32' },
 };
 
-let items = [];
+let allItems = []; // items ทั้งหมดทุกสาขา
 let currentUser = '';
+let currentBranch = 'all'; // 'all' | 'สุราษ' | 'ทักษิณ'
+let currentCat = 'all';
 let cbCounter = 0;
+let qtyTimers = {};
 
 function jsonp(params) {
   return new Promise((resolve, reject) => {
     const cbName = '_cb' + (++cbCounter) + '_' + Date.now();
     const timeout = setTimeout(() => {
       delete window[cbName];
-      document.getElementById(cbName) && document.getElementById(cbName).remove();
+      const el = document.getElementById(cbName);
+      if (el) el.remove();
       reject(new Error('timeout'));
-    }, 10000);
-
+    }, 15000);
     window[cbName] = (data) => {
       clearTimeout(timeout);
       delete window[cbName];
-      document.getElementById(cbName) && document.getElementById(cbName).remove();
+      const el = document.getElementById(cbName);
+      if (el) el.remove();
       resolve(data);
     };
-
     params.callback = cbName;
     const url = SCRIPT_URL + '?' + new URLSearchParams(params);
     const script = document.createElement('script');
     script.id = cbName;
     script.src = url;
-    script.onerror = () => {
-      clearTimeout(timeout);
-      delete window[cbName];
-      script.remove();
-      reject(new Error('script error'));
-    };
+    script.onerror = () => { clearTimeout(timeout); delete window[cbName]; script.remove(); reject(new Error('error')); };
     document.head.appendChild(script);
   });
 }
@@ -261,18 +370,29 @@ async function doLogin() {
   const errEl = document.getElementById('login-err');
   const btn = document.getElementById('login-btn');
   errEl.style.display = 'none';
-  if (!name) { errEl.textContent = 'กรุณากรอกชื่อก่อนเข้าใช้งาน'; errEl.style.display = 'block'; return; }
+  if (!name) { errEl.textContent = 'กรุณากรอกชื่อ'; errEl.style.display = 'block'; return; }
   btn.textContent = 'กำลังเชื่อมต่อ...'; btn.disabled = true;
   try {
-    const data = await jsonp({ action: 'getAll' });
-    if (!data.ok) throw new Error();
-    items = data.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty) }));
+    // โหลดทุก branch พร้อมกัน
+    const [r1, r2] = await Promise.all([
+      jsonp({ action: 'getAll', branch: 'สุราษ' }),
+      jsonp({ action: 'getAll', branch: 'ทักษิณ' }),
+    ]);
+    if (!r1.ok || !r2.ok) throw new Error();
+    const d1 = r1.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty), branch: 'สุราษ' }));
+    const d2 = r2.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty), branch: 'ทักษิณ' }));
+
+    // seed ถ้าสาขาใดว่าง
+    if (d1.length === 0) { await seedDefaults('สุราษ', d1); }
+    if (d2.length === 0) { await seedDefaults('ทักษิณ', d2); }
+
+    allItems = [...d1, ...d2];
     currentUser = name;
     document.getElementById('user-display').textContent = name;
     document.getElementById('avatar-initials').textContent = name.charAt(0).toUpperCase();
     document.getElementById('login-page').classList.remove('active');
     document.getElementById('stock-page').classList.add('active');
-    setSyncStatus('ok', 'ซิงค์กับ Google Sheet แล้ว · ' + now());
+    setSyncStatus('ok', 'ซิงค์แล้ว · ' + now());
     renderAll();
   } catch {
     errEl.textContent = 'เชื่อมต่อ Google Sheet ไม่สำเร็จ — ลองใหม่อีกครั้ง';
@@ -281,11 +401,21 @@ async function doLogin() {
   }
 }
 
+async function seedDefaults(branch, arr) {
+  setSyncStatus('loading', 'กำลังเพิ่มรายการเริ่มต้น (' + branch + ')...');
+  for (const d of DEFAULT_ITEMS) {
+    const id = 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    const newItem = { id, name: d.name, cat: d.cat, note: d.note || '', qty: 0, minQty: 5, branch };
+    arr.push(newItem);
+    await jsonp({ action: 'add', item: JSON.stringify(newItem) });
+  }
+}
+
 document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 function doLogout() {
   if (!confirm('ออกจากระบบ?')) return;
-  currentUser = ''; items = [];
+  currentUser = ''; allItems = [];
   document.getElementById('name-input').value = '';
   document.getElementById('login-btn').textContent = 'เข้าสู่ระบบ';
   document.getElementById('login-btn').disabled = false;
@@ -297,62 +427,102 @@ function doLogout() {
 async function loadItems() {
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('loading');
-  setSyncStatus('loading', 'กำลังโหลดข้อมูล...');
+  setSyncStatus('loading', 'กำลังโหลด...');
   try {
-    const data = await jsonp({ action: 'getAll' });
-    if (!data.ok) throw new Error();
-    items = data.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty) }));
+    const [r1, r2] = await Promise.all([
+      jsonp({ action: 'getAll', branch: 'สุราษ' }),
+      jsonp({ action: 'getAll', branch: 'ทักษิณ' }),
+    ]);
+    if (!r1.ok || !r2.ok) throw new Error();
+    const d1 = r1.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty), branch: 'สุราษ' }));
+    const d2 = r2.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty), branch: 'ทักษิณ' }));
+    allItems = [...d1, ...d2];
     setSyncStatus('ok', 'ซิงค์แล้ว · ' + now());
     renderAll();
-  } catch {
-    setSyncStatus('err', 'โหลดไม่สำเร็จ — กดรีเฟรชอีกครั้ง');
-  }
+  } catch { setSyncStatus('err', 'โหลดไม่สำเร็จ'); }
   btn.classList.remove('loading');
+}
+
+function setBranch(branch) {
+  currentBranch = branch;
+  document.querySelectorAll('.branch-tab').forEach(t => t.classList.remove('active', 'surat', 'thakin'));
+  const activeTab = branch === 'all' ? document.getElementById('btab-all')
+    : branch === 'สุราษ' ? document.getElementById('btab-สุราษ')
+    : document.getElementById('btab-ทักษิณ');
+  activeTab.classList.add('active');
+  if (branch === 'สุราษ') activeTab.classList.add('surat');
+  if (branch === 'ทักษิณ') activeTab.classList.add('thakin');
+  // modal branch select
+  if (branch !== 'all') document.getElementById('m-branch').value = branch;
+  renderAll();
+}
+
+function setCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + cat).classList.add('active');
+  renderAll();
+}
+
+function getFilteredItems() {
+  return allItems.filter(i =>
+    (currentBranch === 'all' || i.branch === currentBranch) &&
+    (currentCat === 'all' || i.cat === currentCat)
+  );
 }
 
 function renderAll() { renderStats(); renderAlert(); renderList(); }
 
 function renderStats() {
-  const low = items.filter(i => i.qty < i.minQty).length;
-  const total = items.reduce((s, i) => s + i.qty, 0);
+  const list = getFilteredItems();
+  const low = list.filter(i => Number(i.qty) < Number(i.minQty)).length;
+  const total = list.reduce((s, i) => s + Number(i.qty), 0);
   document.getElementById('stats-row').innerHTML = `
-    <div class="stat-card"><div class="stat-label">ประเภทอุปกรณ์</div><div class="stat-val">${items.length}</div></div>
-    <div class="stat-card"><div class="stat-label">จำนวนรวม (ชิ้น)</div><div class="stat-val">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">รายการ</div><div class="stat-val">${list.length}</div></div>
+    <div class="stat-card"><div class="stat-label">จำนวนรวม</div><div class="stat-val">${total}</div></div>
     <div class="stat-card"><div class="stat-label">stock ต่ำ</div><div class="stat-val ${low > 0 ? 'danger' : ''}">${low}</div></div>`;
 }
 
 function renderAlert() {
-  const low = items.filter(i => i.qty < i.minQty);
+  const low = getFilteredItems().filter(i => Number(i.qty) < Number(i.minQty));
   document.getElementById('alert-area').innerHTML = low.length
-    ? `<div class="alert-banner"><i class="ti ti-alert-triangle"></i><span>stock ต่ำ: <strong>${low.map(i => i.name).join(', ')}</strong> — กรุณาเติมสต็อก</span></div>` : '';
+    ? `<div class="alert-banner"><i class="ti ti-alert-triangle"></i><span>stock ต่ำ: <strong>${low.map(i => i.name + (currentBranch === 'all' ? ' (' + i.branch + ')' : '')).join(', ')}</strong></span></div>` : '';
 }
 
 function renderList() {
   const q = document.getElementById('search-input').value.trim().toLowerCase();
   const f = document.getElementById('filter-sel').value;
-  const list = items.filter(i => {
-    const m = catMeta[i.cat] || catMeta.other;
-    const isLow = i.qty < i.minQty;
-    return (i.name.toLowerCase().includes(q) || m.label.includes(q)) &&
-      (f === 'all' || (f === 'low' && isLow) || (f === 'ok' && !isLow));
+  const list = getFilteredItems().filter(i => {
+    const isLow = Number(i.qty) < Number(i.minQty);
+    const matchQ = i.name.toLowerCase().includes(q) || (i.note && i.note.toLowerCase().includes(q));
+    const matchF = f === 'all' || (f === 'low' && isLow) || (f === 'ok' && !isLow);
+    return matchQ && matchF;
   });
   const el = document.getElementById('items-list');
   if (!list.length) {
-    el.innerHTML = `<div class="empty-state"><i class="ti ti-mood-empty"></i><span>ไม่พบอุปกรณ์</span></div>`;
+    el.innerHTML = `<div class="empty-state"><i class="ti ti-mood-empty"></i><span>ไม่พบรายการ</span></div>`;
     return;
   }
   el.innerHTML = list.map(item => {
-    const m = catMeta[item.cat] || catMeta.other;
-    const isLow = item.qty < item.minQty;
+    const m = catMeta[item.cat] || catMeta.sup;
+    const isLow = Number(item.qty) < Number(item.minQty);
     return `<div class="item-card ${isLow ? 'low' : ''}">
       <div class="item-icon" style="background:${m.bg}"><i class="ti ${m.icon}" style="color:${m.ic}"></i></div>
       <div class="item-info">
-        <div class="item-name">${item.name}<span class="badge ${isLow ? 'badge-low' : 'badge-ok'}">${isLow ? 'ต่ำ' : 'พร้อม'}</span></div>
-        <div class="item-meta">${m.label} · ขั้นต่ำ ${item.minQty} ชิ้น</div>
+        <div class="item-name">${item.name}</div>
+        ${item.note ? `<div class="item-note"><i class="ti ti-info-circle" style="font-size:12px"></i> ${item.note}</div>` : ''}
+        <div class="item-meta">
+          <span class="badge badge-${item.branch === 'สุราษ' ? 'surat' : 'thakin'}">${item.branch}</span>
+          <span class="badge ${item.cat === 'med' ? 'badge-med' : 'badge-sup'}">${m.label}</span>
+          <span class="badge ${isLow ? 'badge-low' : 'badge-ok'}">${isLow ? 'ต่ำ' : 'พร้อม'}</span>
+          <span style="font-size:11px;color:var(--text3)">ขั้นต่ำ ${item.minQty}</span>
+        </div>
       </div>
       <div class="item-qty">
         <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
-        <span class="qty-num ${isLow ? 'low' : ''}">${item.qty}</span>
+        <input class="qty-input ${isLow ? 'low' : ''}" type="number" min="0" value="${item.qty}"
+          onchange="setQty('${item.id}', this.value)"
+          oninput="scheduleQtySave('${item.id}', this)" />
         <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
       </div>
       <button class="btn-del" onclick="deleteItem('${item.id}')" title="ลบ"><i class="ti ti-trash"></i></button>
@@ -360,21 +530,32 @@ function renderList() {
   }).join('');
 }
 
-async function changeQty(id, delta) {
-  const item = items.find(i => String(i.id) === String(id));
+function scheduleQtySave(id, input) {
+  clearTimeout(qtyTimers[id]);
+  qtyTimers[id] = setTimeout(() => setQty(id, input.value), 800);
+}
+
+async function setQty(id, val) {
+  const item = allItems.find(i => String(i.id) === String(id));
   if (!item) return;
-  item.qty = Math.max(0, item.qty + delta);
+  item.qty = Math.max(0, parseInt(val) || 0);
   renderAll();
   setSyncStatus('loading', 'กำลังบันทึก...');
   try {
-    await jsonp({ action: 'updateQty', id: item.id, qty: item.qty });
+    await jsonp({ action: 'updateQty', id, qty: item.qty });
     setSyncStatus('ok', 'บันทึกแล้ว · ' + now());
   } catch { setSyncStatus('err', 'บันทึกไม่สำเร็จ'); }
 }
 
+async function changeQty(id, delta) {
+  const item = allItems.find(i => String(i.id) === String(id));
+  if (!item) return;
+  await setQty(id, Number(item.qty) + delta);
+}
+
 async function deleteItem(id) {
-  if (!confirm('ลบรายการนี้ออกจาก Sheet?')) return;
-  items = items.filter(i => String(i.id) !== String(id));
+  if (!confirm('ลบรายการนี้?')) return;
+  allItems = allItems.filter(i => String(i.id) !== String(id));
   renderAll();
   setSyncStatus('loading', 'กำลังลบ...');
   try {
@@ -383,26 +564,33 @@ async function deleteItem(id) {
   } catch { setSyncStatus('err', 'ลบไม่สำเร็จ'); }
 }
 
-function openModal() { document.getElementById('modal').classList.add('open'); document.getElementById('m-name').focus(); }
+function openModal() {
+  if (currentBranch !== 'all') document.getElementById('m-branch').value = currentBranch;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('m-name').focus();
+}
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.getElementById('m-name').value = '';
-  document.getElementById('m-qty').value = '1';
-  document.getElementById('m-min').value = '3';
+  document.getElementById('m-note').value = '';
+  document.getElementById('m-qty').value = '0';
+  document.getElementById('m-min').value = '5';
 }
 function onModalBg(e) { if (e.target === document.getElementById('modal')) closeModal(); }
 
 async function addItem() {
   const name = document.getElementById('m-name').value.trim();
-  if (!name) { alert('กรุณากรอกชื่ออุปกรณ์'); return; }
+  if (!name) { alert('กรุณากรอกชื่อรายการ'); return; }
+  const branch = document.getElementById('m-branch').value;
   const cat    = document.getElementById('m-cat').value;
+  const note   = document.getElementById('m-note').value.trim();
   const qty    = Math.max(0, parseInt(document.getElementById('m-qty').value) || 0);
-  const minQty = Math.max(1, parseInt(document.getElementById('m-min').value) || 1);
+  const minQty = Math.max(0, parseInt(document.getElementById('m-min').value) || 0);
   const id     = 'item_' + Date.now();
-  const newItem = { id, name, cat, qty, minQty };
-  items.push(newItem);
+  const newItem = { id, name, cat, note, qty, minQty, branch };
+  allItems.push(newItem);
   closeModal(); renderAll();
-  setSyncStatus('loading', 'กำลังบันทึกลง Sheet...');
+  setSyncStatus('loading', 'กำลังบันทึก...');
   try {
     await jsonp({ action: 'add', item: JSON.stringify(newItem) });
     setSyncStatus('ok', 'บันทึกแล้ว · ' + now());
