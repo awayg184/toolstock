@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToolStock — ระบบจัดการ Stock อุปกรณ์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f1;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: rgba(0,0,0,0.10);
+    --border-md: rgba(0,0,0,0.18);
+    --text: #1a1917;
+    --text2: #6b6762;
+    --text3: #a09c97;
+    --accent: #2563eb;
+    --accent-bg: #eff4ff;
+    --accent-border: rgba(37,99,235,0.3);
+    --success: #2e7d32;
+    --success-bg: #f0faf0;
+    --danger: #c0392b;
+    --danger-bg: #fef2f2;
+    --danger-border: rgba(192,57,43,0.25);
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --radius: 10px;
+    --radius-sm: 7px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412;
+      --surface: #1e1d1b;
+      --surface2: #252420;
+      --border: rgba(255,255,255,0.09);
+      --border-md: rgba(255,255,255,0.16);
+      --text: #f0ede8;
+      --text2: #9e9b96;
+      --text3: #6b6762;
+      --accent: #4f86f7;
+      --accent-bg: #1a2540;
+      --accent-border: rgba(79,134,247,0.35);
+      --success: #4caf50;
+      --success-bg: #0f2410;
+      --danger: #ef5350;
+      --danger-bg: #2a1010;
+      --danger-border: rgba(239,83,80,0.3);
+      --warn: #fbbf24;
+      --warn-bg: #2a1f08;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+  }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── LAYOUT ─── */
+  #app { min-height: 100vh; position: relative; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ─── LOGIN ─── */
+  #login-page {
+    display: none;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  #login-page.active { display: flex; }
+
+  .login-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius);
+    padding: 2.25rem 2.5rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: var(--shadow);
+  }
+
+  .login-logo {
+    display: flex; align-items: center; gap: 10px;
+    justify-content: center; margin-bottom: 2rem;
+  }
+  .login-logo .logo-icon {
+    width: 42px; height: 42px; border-radius: var(--radius-sm);
+    background: var(--accent-bg); border: 0.5px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--accent);
+  }
+  .login-logo .logo-name { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+
+  .field-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
+  .field-row { margin-bottom: 1rem; }
+
+  input, select {
+    width: 100%; padding: 9px 12px;
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+
+  .btn-primary {
+    width: 100%; padding: 10px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .login-sub { font-size: 12px; color: var(--text3); text-align: center; margin-top: 1rem; }
+  .err-msg { font-size: 12px; color: var(--danger); margin-bottom: 10px; display: none; padding: 8px 12px; background: var(--danger-bg); border-radius: var(--radius-sm); }
+
+  /* ─── MAIN ─── */
+  #stock-page { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; padding-bottom: 1.25rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .topbar-icon {
+    width: 34px; height: 34px; border-radius: var(--radius-sm);
+    background: var(--accent-bg); border: 0.5px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--accent);
+  }
+  .topbar-title { font-size: 17px; font-weight: 600; }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface2); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 4px 12px 4px 4px;
+    font-size: 13px; cursor: pointer; transition: border-color 0.15s;
+  }
+  .user-chip:hover { border-color: var(--border-md); }
+  .avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-bg); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+  }
+
+  /* ─── SYNC BAR ─── */
+  .sync-bar { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text3); margin-bottom: 1.25rem; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+  .sync-dot.ok { background: var(--success); }
+  .sync-dot.err { background: var(--danger); }
+  .sync-dot.loading { background: var(--warn); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+  /* ─── ALERT ─── */
+  .alert-banner {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--danger-bg); border: 0.5px solid var(--danger-border);
+    border-radius: var(--radius-sm); padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem; font-size: 13px; color: var(--danger);
+  }
+  .alert-banner i { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── STATS ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-card {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0.9rem 1rem;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .stat-val { font-size: 24px; font-weight: 600; color: var(--text); }
+  .stat-val.danger { color: var(--danger); }
+
+  /* ─── TOOLBAR ─── */
+  .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .search-wrap { flex: 1; min-width: 160px; position: relative; }
+  .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text3); pointer-events: none; }
+  .search-wrap input { padding-left: 34px; }
+
+  .filter-sel { font-size: 13px; }
+
+  .btn-icon {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-sm); padding: 8px 13px;
+    font-family: 'Sarabun', sans-serif; font-size: 13px;
+    color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-icon:hover { border-color: var(--border-md); color: var(--text); }
+  .btn-icon.loading i { animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn-add {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    padding: 8px 14px; font-family: 'Sarabun', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: opacity 0.15s; white-space: nowrap;
+  }
+  .btn-add:hover { opacity: 0.88; }
+
+  /* ─── ITEM CARDS ─── */
+  .items-list { display: flex; flex-direction: column; gap: 8px; }
+  .item-card {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0.9rem 1.1rem;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow); transition: border-color 0.15s;
+  }
+  .item-card:hover { border-color: var(--border-md); }
+  .item-card.low { border-left: 3px solid var(--danger); }
+
+  .item-icon {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; flex-shrink: 0;
+  }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 14px; font-weight: 500; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .item-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .badge {
+    font-size: 11px; padding: 1px 8px; border-radius: 999px;
+    font-weight: 500; flex-shrink: 0;
+  }
+  .badge-low { background: var(--danger-bg); color: var(--danger); }
+  .badge-ok  { background: var(--success-bg); color: var(--success); }
+
+  .item-qty { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .qty-num { font-size: 19px; font-weight: 600; min-width: 38px; text-align: center; color: var(--text); }
+  .qty-num.low { color: var(--danger); }
+  .qty-btn {
+    width: 30px; height: 30px; border-radius: var(--radius-sm);
+    border: 0.5px solid var(--border-md); background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 17px; color: var(--text);
+    transition: background 0.12s;
+  }
+  .qty-btn:hover { background: var(--bg); }
+
+  .btn-del {
+    background: none; border: none; color: var(--text3);
+    cursor: pointer; padding: 5px; border-radius: var(--radius-sm);
+    margin-left: 2px; font-size: 17px; transition: color 0.15s;
+  }
+  .btn-del:hover { color: var(--danger); }
+
+  .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--text2); }
+  .empty-state i { font-size: 42px; display: block; margin-bottom: 0.75rem; color: var(--text3); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 200;
+    align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border: 0.5px solid var(--border-md);
+    border-radius: var(--radius); padding: 1.75rem;
+    width: 100%; max-width: 360px; box-shadow: var(--shadow);
+  }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 1.25rem; }
+  .modal-field { margin-bottom: 1rem; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 0.5rem; }
+  .btn-cancel {
+    flex: 1; background: var(--surface2);
+    border: 0.5px solid var(--border-md); border-radius: var(--radius-sm);
+    padding: 9px; font-family: 'Sarabun', sans-serif;
+    font-size: 14px; color: var(--text); cursor: pointer;
+  }
+  .btn-cancel:hover { border-color: var(--border-md); }
+  .btn-save {
+    flex: 1; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    padding: 9px; font-family: 'Sarabun', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .btn-save:hover { opacity: 0.88; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 480px) {
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .stat-val { font-size: 20px; }
+    .login-card { padding: 1.75rem 1.5rem; }
+    #stock-page { padding: 1rem 0.75rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- LOGIN -->
+  <div id="login-page" class="page active">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon"><i class="ti ti-tool"></i></div>
+        <span class="logo-name">ToolStock</span>
+      </div>
+      <div class="field-row">
+        <label class="field-label" for="name-input">ชื่อของคุณ</label>
+        <input id="name-input" type="text" placeholder="กรอกชื่อ เช่น สมชาย" autocomplete="off" />
+      </div>
+      <p id="login-err" class="err-msg"></p>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <p class="login-sub">ไม่ต้องใส่รหัสผ่าน · ข้อมูลเก็บใน Google Sheet</p>
+    </div>
+  </div>
+
+  <!-- STOCK PAGE -->
+  <div id="stock-page" class="page">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-icon"><i class="ti ti-tool"></i></div>
+        <span class="topbar-title">ToolStock</span>
+      </div>
+      <div class="user-chip" onclick="doLogout()" title="ออกจากระบบ">
+        <div class="avatar" id="avatar-initials">?</div>
+        <span id="user-display">User</span>
+        <i class="ti ti-logout" style="font-size:13px;color:var(--text3)"></i>
+      </div>
+    </div>
+
+    <div class="sync-bar">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-text">กำลังโหลด...</span>
+    </div>
+
+    <div id="alert-area"></div>
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="ti ti-search"></i>
+        <input id="search-input" type="text" placeholder="ค้นหาอุปกรณ์..." oninput="renderList()" />
+      </div>
+      <select class="filter-sel" id="filter-sel" onchange="renderList()">
+        <option value="all">ทั้งหมด</option>
+        <option value="low">stock ต่ำ</option>
+        <option value="ok">พร้อมใช้</option>
+      </select>
+      <button class="btn-icon" id="refresh-btn" onclick="loadItems()">
+        <i class="ti ti-refresh"></i> รีเฟรช
+      </button>
+      <button class="btn-add" onclick="openModal()">
+        <i class="ti ti-plus"></i> เพิ่มสินค้า
+      </button>
+    </div>
+
+    <div class="items-list" id="items-list"></div>
+  </div>
+
+  <!-- ADD MODAL -->
+  <div id="modal" class="modal-overlay" onclick="onModalBg(event)">
+    <div class="modal-box">
+      <p class="modal-title">เพิ่มอุปกรณ์ใหม่</p>
+      <div class="modal-field">
+        <label class="field-label" for="m-name">ชื่ออุปกรณ์</label>
+        <input id="m-name" type="text" placeholder="เช่น ไขควง, สว่าน, ประแจ" />
+      </div>
+      <div class="modal-field">
+        <label class="field-label" for="m-cat">หมวดหมู่</label>
+        <select id="m-cat">
+          <option value="hand">เครื่องมือมือ</option>
+          <option value="power">เครื่องมือไฟฟ้า</option>
+          <option value="measure">เครื่องวัด</option>
+          <option value="safety">อุปกรณ์ความปลอดภัย</option>
+          <option value="other">อื่นๆ</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="field-label" for="m-qty">จำนวนเริ่มต้น</label>
+        <input id="m-qty" type="number" min="0" value="1" />
+      </div>
+      <div class="modal-field">
+        <label class="field-label" for="m-min">แจ้งเตือนเมื่อเหลือต่ำกว่า</label>
+        <input id="m-min" type="number" min="1" value="3" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn-save" onclick="addItem()">บันทึกลง Sheet</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPQuYsM-NVuM18tM5MhduZo7hj_kUFfQkXhMmC0SCl6JmH5YMmkKVMObed_6halX-j/exec';
+
+const catMeta = {
+  hand:    { label:'เครื่องมือมือ',        icon:'ti-hammer', bg:'#eff4ff', ic:'#2563eb' },
+  power:   { label:'เครื่องมือไฟฟ้า',     icon:'ti-bolt',   bg:'#fffbeb', ic:'#b45309' },
+  measure: { label:'เครื่องวัด',           icon:'ti-ruler',  bg:'#f0faf0', ic:'#2e7d32' },
+  safety:  { label:'อุปกรณ์ความปลอดภัย',  icon:'ti-shield', bg:'#fef2f2', ic:'#c0392b' },
+  other:   { label:'อื่นๆ',               icon:'ti-box',    bg:'#f5f4f1', ic:'#6b6762' },
+};
+
+let items = [];
+let currentUser = '';
+
+function setSyncStatus(state, text) {
+  document.getElementById('sync-dot').className = 'sync-dot ' + state;
+  document.getElementById('sync-text').textContent = text;
+}
+
+async function apiGet(params) {
+  const res = await fetch(SCRIPT_URL + '?' + new URLSearchParams(params));
+  return res.json();
+}
+
+async function apiPost(body) {
+  const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(body) });
+  return res.json();
+}
+
+async function doLogin() {
+  const name = document.getElementById('name-input').value.trim();
+  const errEl = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  if (!name) {
+    errEl.textContent = 'กรุณากรอกชื่อก่อนเข้าใช้งาน';
+    errEl.style.display = 'block'; return;
+  }
+  btn.textContent = 'กำลังเชื่อมต่อ...'; btn.disabled = true;
+  try {
+    const data = await apiGet({ action: 'getAll' });
+    if (!data.ok) throw new Error();
+    items = data.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty) }));
+    currentUser = name;
+    document.getElementById('user-display').textContent = name;
+    document.getElementById('avatar-initials').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('login-page').classList.remove('active');
+    document.getElementById('stock-page').classList.add('active');
+    setSyncStatus('ok', 'ซิงค์กับ Google Sheet แล้ว · ' + now());
+    renderAll();
+  } catch {
+    errEl.textContent = 'เชื่อมต่อ Google Sheet ไม่สำเร็จ — ลองใหม่อีกครั้ง';
+    errEl.style.display = 'block';
+    btn.textContent = 'เข้าสู่ระบบ'; btn.disabled = false;
+  }
+}
+
+document.getElementById('name-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogout() {
+  if (!confirm('ออกจากระบบ?')) return;
+  currentUser = ''; items = [];
+  document.getElementById('name-input').value = '';
+  document.getElementById('login-btn').textContent = 'เข้าสู่ระบบ';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-err').style.display = 'none';
+  document.getElementById('stock-page').classList.remove('active');
+  document.getElementById('login-page').classList.add('active');
+}
+
+async function loadItems() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('loading');
+  setSyncStatus('loading', 'กำลังโหลดข้อมูล...');
+  try {
+    const data = await apiGet({ action: 'getAll' });
+    if (!data.ok) throw new Error();
+    items = data.data.map(r => ({ ...r, qty: Number(r.qty), minQty: Number(r.minQty) }));
+    setSyncStatus('ok', 'ซิงค์แล้ว · ' + now());
+    renderAll();
+  } catch {
+    setSyncStatus('err', 'โหลดไม่สำเร็จ — กดรีเฟรชอีกครั้ง');
+  }
+  btn.classList.remove('loading');
+}
+
+function renderAll() { renderStats(); renderAlert(); renderList(); }
+
+function renderStats() {
+  const low = items.filter(i => i.qty < i.minQty).length;
+  const total = items.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card"><div class="stat-label">ประเภทอุปกรณ์</div><div class="stat-val">${items.length}</div></div>
+    <div class="stat-card"><div class="stat-label">จำนวนรวม (ชิ้น)</div><div class="stat-val">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">stock ต่ำ</div><div class="stat-val ${low > 0 ? 'danger' : ''}">${low}</div></div>`;
+}
+
+function renderAlert() {
+  const low = items.filter(i => i.qty < i.minQty);
+  document.getElementById('alert-area').innerHTML = low.length
+    ? `<div class="alert-banner"><i class="ti ti-alert-triangle"></i><span>stock ต่ำ: <strong>${low.map(i => i.name).join(', ')}</strong> — กรุณาเติมสต็อก</span></div>` : '';
+}
+
+function renderList() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const f = document.getElementById('filter-sel').value;
+  const list = items.filter(i => {
+    const m = catMeta[i.cat] || catMeta.other;
+    const isLow = i.qty < i.minQty;
+    return (i.name.toLowerCase().includes(q) || m.label.includes(q)) &&
+      (f === 'all' || (f === 'low' && isLow) || (f === 'ok' && !isLow));
+  });
+  const el = document.getElementById('items-list');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><i class="ti ti-mood-empty"></i><span>ไม่พบอุปกรณ์</span></div>`;
+    return;
+  }
+  el.innerHTML = list.map(item => {
+    const m = catMeta[item.cat] || catMeta.other;
+    const isLow = item.qty < item.minQty;
+    return `<div class="item-card ${isLow ? 'low' : ''}">
+      <div class="item-icon" style="background:${m.bg}"><i class="ti ${m.icon}" style="color:${m.ic}"></i></div>
+      <div class="item-info">
+        <div class="item-name">${item.name}<span class="badge ${isLow ? 'badge-low' : 'badge-ok'}">${isLow ? 'ต่ำ' : 'พร้อม'}</span></div>
+        <div class="item-meta">${m.label} · ขั้นต่ำ ${item.minQty} ชิ้น</div>
+      </div>
+      <div class="item-qty">
+        <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
+        <span class="qty-num ${isLow ? 'low' : ''}">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
+      </div>
+      <button class="btn-del" onclick="deleteItem('${item.id}')" title="ลบ"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+
+async function changeQty(id, delta) {
+  const item = items.find(i => String(i.id) === String(id));
+  if (!item) return;
+  item.qty = Math.max(0, item.qty + delta);
+  renderAll();
+  setSyncStatus('loading', 'กำลังบันทึก...');
+  try {
+    await apiPost({ action: 'updateQty', id, qty: item.qty });
+    setSyncStatus('ok', 'บันทึกแล้ว · ' + now());
+  } catch { setSyncStatus('err', 'บันทึกไม่สำเร็จ'); }
+}
+
+async function deleteItem(id) {
+  if (!confirm('ลบรายการนี้ออกจาก Sheet?')) return;
+  items = items.filter(i => String(i.id) !== String(id));
+  renderAll();
+  setSyncStatus('loading', 'กำลังลบ...');
+  try {
+    await apiPost({ action: 'delete', id });
+    setSyncStatus('ok', 'ลบแล้ว · ' + now());
+  } catch { setSyncStatus('err', 'ลบไม่สำเร็จ'); }
+}
+
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('m-name').focus();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('m-name').value = '';
+  document.getElementById('m-qty').value = '1';
+  document.getElementById('m-min').value = '3';
+}
+function onModalBg(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+async function addItem() {
+  const name = document.getElementById('m-name').value.trim();
+  if (!name) { alert('กรุณากรอกชื่ออุปกรณ์'); return; }
+  const cat    = document.getElementById('m-cat').value;
+  const qty    = Math.max(0, parseInt(document.getElementById('m-qty').value) || 0);
+  const minQty = Math.max(1, parseInt(document.getElementById('m-min').value) || 1);
+  const id     = 'item_' + Date.now();
+  const newItem = { id, name, cat, qty, minQty };
+  items.push(newItem);
+  closeModal(); renderAll();
+  setSyncStatus('loading', 'กำลังบันทึกลง Sheet...');
+  try {
+    await apiPost({ action: 'add', item: newItem });
+    setSyncStatus('ok', 'บันทึกแล้ว · ' + now());
+  } catch { setSyncStatus('err', 'บันทึกไม่สำเร็จ'); }
+}
+
+function now() { return new Date().toLocaleTimeString('th-TH'); }
+</script>
+</body>
+</html>
