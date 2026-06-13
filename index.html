@@ -335,12 +335,19 @@ async function doLogin(){
   if(!name){err.textContent='กรุณากรอกชื่อ';err.style.display='block';return}
   btn.textContent='กำลังเชื่อมต่อ...';btn.disabled=true;
   try{
-    const[r1,r2]=await Promise.all([jsonp({action:'getAll',branch:'สุราษ'}),jsonp({action:'getAll',branch:'ทักษิณ'})]);
-    if(!r1.ok||!r2.ok)throw new Error();
+    btn.textContent='โหลดข้อมูลสุราษ...';
+    const r1=await jsonp({action:'getAll',branch:'สุราษ'});
+    if(!r1.ok)throw new Error('สุราษ failed');
     const d1=r1.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'สุราษ'}));
+
+    btn.textContent='โหลดข้อมูลทักษิณ...';
+    const r2=await jsonp({action:'getAll',branch:'ทักษิณ'});
+    if(!r2.ok)throw new Error('ทักษิณ failed');
     const d2=r2.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'ทักษิณ'}));
+
     if(d1.length===0)await seed('สุราษ',d1);
     if(d2.length===0)await seed('ทักษิณ',d2);
+
     allItems=[...d1,...d2];
     currentUser=name;
     document.getElementById('uname').textContent=name;
@@ -349,8 +356,8 @@ async function doLogin(){
     document.getElementById('stock-page').classList.add('active');
     sync('ok','ซิงค์แล้ว · '+now());
     renderAll();
-  }catch{
-    err.textContent='เชื่อมต่อ Google Sheet ไม่สำเร็จ — ลองใหม่อีกครั้ง';
+  }catch(e){
+    err.textContent='เชื่อมต่อไม่สำเร็จ: '+e.message+' — ลองใหม่อีกครั้ง';
     err.style.display='block';
     btn.textContent='เข้าสู่ระบบ';btn.disabled=false;
   }
