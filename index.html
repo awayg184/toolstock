@@ -201,8 +201,8 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 
   <div class="seg">
     <button class="seg-btn on s-surat" id="bs-all" onclick="setBranch('all')">🏥 ทั้งสองสาขา</button>
-    <button class="seg-btn" id="bs-สุราษ" onclick="setBranch('สุราษ')">สุราษ</button>
-    <button class="seg-btn" id="bs-ทักษิณ" onclick="setBranch('ทักษิณ')">ทักษิณ</button>
+    <button class="seg-btn" id="bs-surat" onclick="setBranch('surat')">สุราษ</button>
+    <button class="seg-btn" id="bs-thakin" onclick="setBranch('thakin')">ทักษิณ</button>
   </div>
 
   <div class="cat-row">
@@ -241,7 +241,7 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
     </div>
     <div class="m-row">
       <label class="f-label" for="m-branch">สาขา</label>
-      <select id="m-branch"><option value="สุราษ">สุราษ</option><option value="ทักษิณ">ทักษิณ</option></select>
+      <select id="m-branch"><option value="surat">สุราษ</option><option value="thakin">ทักษิณ</option></select>
     </div>
     <div class="m-row">
       <label class="f-label" for="m-name">ชื่อรายการ</label>
@@ -338,17 +338,17 @@ async function doLogin(){
   btn.textContent='กำลังเชื่อมต่อ...';btn.disabled=true;
   try{
     btn.textContent='โหลดข้อมูลสุราษ...';
-    const r1=await jsonp({action:'getAll',branch:'สุราษ'});
+    const r1=await jsonp({action:'getAll',branch:'surat'});
     if(!r1.ok)throw new Error('สุราษ failed');
-    const d1=r1.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'สุราษ'}));
+    const d1=r1.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'surat'}));
 
     btn.textContent='โหลดข้อมูลทักษิณ...';
-    const r2=await jsonp({action:'getAll',branch:'ทักษิณ'});
+    const r2=await jsonp({action:'getAll',branch:'thakin'});
     if(!r2.ok)throw new Error('ทักษิณ failed');
-    const d2=r2.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'ทักษิณ'}));
+    const d2=r2.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'thakin'}));
 
-    if(d1.length===0)await seed('สุราษ',d1);
-    if(d2.length===0)await seed('ทักษิณ',d2);
+    if(d1.length===0)await seed('surat',d1);
+    if(d2.length===0)await seed('thakin',d2);
 
     allItems=[...d1,...d2];
     currentUser=name;
@@ -366,7 +366,7 @@ async function doLogin(){
 }
 
 async function seed(branch,arr){
-  sync('spin','กำลังเพิ่มรายการเริ่มต้น ('+branch+')...');
+  const bLabel=branch==='surat'?'สุราษ':'ทักษิณ';sync('spin','กำลังเพิ่มรายการเริ่มต้น ('+bLabel+')...');
   for(const d of DEFAULT_ITEMS){
     const id='item_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
     const it={id,name:d.name,cat:d.cat,note:d.note||'',qty:0,minQty:5,branch};
@@ -392,10 +392,10 @@ async function loadItems(){
   const btn=document.getElementById('rbtn');btn.classList.add('spin');
   sync('spin','กำลังโหลด...');
   try{
-    const[r1,r2]=await Promise.all([jsonp({action:'getAll',branch:'สุราษ'}),jsonp({action:'getAll',branch:'ทักษิณ'})]);
+    const[r1,r2]=await Promise.all([jsonp({action:'getAll',branch:'surat'}),jsonp({action:'getAll',branch:'thakin'})]);
     if(!r1.ok||!r2.ok)throw new Error();
-    const d1=r1.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'สุราษ'}));
-    const d2=r2.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'ทักษิณ'}));
+    const d1=r1.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'surat'}));
+    const d2=r2.data.map(r=>({...r,qty:+r.qty,minQty:+r.minQty,branch:'thakin'}));
     allItems=[...d1,...d2];
     sync('ok','ซิงค์แล้ว · '+now());renderAll();
   }catch{sync('err','โหลดไม่สำเร็จ')}
@@ -405,10 +405,10 @@ async function loadItems(){
 function setBranch(b){
   currentBranch=b;
   document.querySelectorAll('.seg-btn').forEach(t=>t.classList.remove('on','s-surat','s-thakin'));
-  const t=b==='all'?document.getElementById('bs-all'):b==='สุราษ'?document.getElementById('bs-สุราษ'):document.getElementById('bs-ทักษิณ');
+  const t=b==='all'?document.getElementById('bs-all'):b==='surat'?document.getElementById('bs-surat'):document.getElementById('bs-thakin');
   t.classList.add('on');
-  if(b==='สุราษ')t.classList.add('s-surat');
-  if(b==='ทักษิณ')t.classList.add('s-thakin');
+  if(b==='surat')t.classList.add('s-surat');
+  if(b==='thakin')t.classList.add('s-thakin');
   if(b!=='all')document.getElementById('m-branch').value=b;
   renderAll();
 }
@@ -439,7 +439,7 @@ function renderStats(){
 function renderAlert(){
   const low=getVis().filter(i=>+i.qty<+i.minQty);
   document.getElementById('alert-area').innerHTML=low.length
-    ?`<div class="alert"><i class="ti ti-alert-triangle"></i><span>stock ต่ำ: <strong>${low.map(i=>i.name+(currentBranch==='all'?' ('+i.branch+')':'')).join(', ')}</strong></span></div>`:''
+    ?`<div class="alert"><i class="ti ti-alert-triangle"></i><span>stock ต่ำ: <strong>${low.map(i=>i.name+(currentBranch==='all'?' ('+(i.branch==='surat'?'สุราษ':'ทักษิณ')+')':'')).join(', ')}</strong></span></div>`:''
 }
 
 function renderList(){
@@ -461,7 +461,7 @@ function renderList(){
         <div class="c-name">${it.name}</div>
         ${it.note?`<div class="c-note"><i class="ti ti-clock-exclamation" style="font-size:12px"></i>${it.note}</div>`:''}
         <div class="c-meta">
-          <span class="badge b-${it.branch==='สุราษ'?'surat':'thakin'}">${it.branch}</span>
+          <span class="badge b-${it.branch==='surat'?'surat':'thakin'}">${it.branch==='surat'?'สุราษ':'ทักษิณ'}</span>
           <span class="badge ${it.cat==='med'?'b-med':'b-sup'}">${m.label}</span>
           <span class="badge ${low?'b-low':'b-ok'}">${low?'ต่ำ':'พร้อม'}</span>
           <span style="font-size:11px;color:var(--text3)">ขั้นต่ำ ${it.minQty}</span>
@@ -508,7 +508,7 @@ function openModal(id){
   editingId=id;
   const it=id?allItems.find(i=>String(i.id)===String(id)):null;
   document.getElementById('modal-title').textContent=it?'แก้ไขรายการ':'เพิ่มรายการใหม่';
-  document.getElementById('m-branch').value=it?it.branch:(currentBranch!=='all'?currentBranch:'สุราษ');
+  document.getElementById('m-branch').value=it?it.branch:(currentBranch!=='all'?currentBranch:'surat');
   document.getElementById('m-name').value=it?it.name:'';
   document.getElementById('m-cat').value=it?it.cat:'sup';
   document.getElementById('m-note').value=it?it.note:'';
